@@ -246,3 +246,17 @@ PYTHONPATH=src bash scripts/eval.sh
 - `reward.colregs_mode: softmin`
 - `reward.w_cvar: 0.05`
 - `reward.cvar_alpha: 0.5`
+
+## 12. 从“候选选择”到“真实参数更新”
+
+新增 `tools/train_grpo_policy.py`：
+- 使用 `GaussianVelocityPolicy(theta, sigma)`
+- 使用 group-relative advantage 的 REINFORCE 更新 `theta`
+- 可用于验证“奖励是否能驱动策略参数变好”
+
+命令：
+```bash
+PYTHONPATH=src python tools/train_grpo_policy.py \
+  --input data/sample_shiptraj.jsonl \
+  --epochs 15 --num-samples 8 --lr 1e-2 --seed 42
+```
