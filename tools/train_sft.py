@@ -7,12 +7,70 @@ from pathlib import Path
 from typing import Any
 
 
+def _parse_scalar(v: str):
+    v = v.strip()
+    if v.startswith("[") and v.endswith("]"):
+        inner = v[1:-1].strip()
+        if not inner:
+            return []
+        out = []
+        for item in inner.split(","):
+            item = item.strip()
+            try:
+                out.append(int(item))
+                continue
+            except ValueError:
+                pass
+            try:
+                out.append(float(item))
+                continue
+            except ValueError:
+                pass
+            out.append(item)
+        return out
+    if v.lower() in {"true", "false"}:
+        return v.lower() == "true"
+    try:
+        return int(v)
+    except ValueError:
+        pass
+    try:
+        return float(v)
+    except ValueError:
+        pass
+    return v
+
+
+def _minimal_yaml(text: str) -> dict[str, Any]:
+    root: dict[str, Any] = {}
+    current_map = root
+    stack: list[tuple[int, dict[str, Any]]] = [(0, root)]
+    for raw in text.splitlines():
+        if not raw.strip() or raw.strip().startswith("#"):
+            continue
+        indent = len(raw) - len(raw.lstrip(" "))
+        line = raw.strip()
+        while len(stack) > 1 and indent < stack[-1][0]:
+            stack.pop()
+        current_map = stack[-1][1]
+        if line.endswith(":"):
+            key = line[:-1].strip()
+            new_map: dict[str, Any] = {}
+            current_map[key] = new_map
+            stack.append((indent + 2, new_map))
+            continue
+        key, val = line.split(":", 1)
+        current_map[key.strip()] = _parse_scalar(val)
+    return root
+
+
 def load_yaml(path: Path) -> dict[str, Any]:
+    text = path.read_text()
     try:
         import yaml  # type: ignore
-    except ImportError as exc:
-        raise SystemExit("Missing dependency: pyyaml. Install with `pip install pyyaml`.") from exc
-    return yaml.safe_load(path.read_text())
+        return yaml.safe_load(text)
+    except Exception:
+        return _minimal_yaml(text)
 
 
 def iter_jsonl(path: Path):

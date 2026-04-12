@@ -234,3 +234,15 @@ PYTHONPATH=src bash scripts/eval.sh
 - `w_colregs=0.0`（不启用规则风险）
 - `w_colregs=0.2`（默认）
 - `w_colregs=0.4`（强规则）
+
+## 11. 已落地的二阶增强：多邻船聚合 + CVaR 尾部风险
+
+新增能力：
+- 多邻船 COLREGs 奖励聚合：`multi_colregs_reward` 支持 `min/mean/softmin`
+- 尾部风险奖励：`cvar_accuracy_reward(alpha)`，对最差分位误差敏感
+- 在 `combined_reward` 中可与 `w_cvar` 一起使用
+
+配置建议（`configs/shiptraj_r1_grpo.yaml`）：
+- `reward.colregs_mode: softmin`
+- `reward.w_cvar: 0.05`
+- `reward.cvar_alpha: 0.5`

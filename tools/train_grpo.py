@@ -8,12 +8,70 @@ from pathlib import Path
 from typing import Any
 
 
+def _parse_scalar(v: str):
+    v = v.strip()
+    if v.startswith("[") and v.endswith("]"):
+        inner = v[1:-1].strip()
+        if not inner:
+            return []
+        out = []
+        for item in inner.split(","):
+            item = item.strip()
+            try:
+                out.append(int(item))
+                continue
+            except ValueError:
+                pass
+            try:
+                out.append(float(item))
+                continue
+            except ValueError:
+                pass
+            out.append(item)
+        return out
+    if v.lower() in {"true", "false"}:
+        return v.lower() == "true"
+    try:
+        return int(v)
+    except ValueError:
+        pass
+    try:
+        return float(v)
+    except ValueError:
+        pass
+    return v
+
+
+def _minimal_yaml(text: str) -> dict[str, Any]:
+    root: dict[str, Any] = {}
+    current_map = root
+    stack: list[tuple[int, dict[str, Any]]] = [(0, root)]
+    for raw in text.splitlines():
+        if not raw.strip() or raw.strip().startswith("#"):
+            continue
+        indent = len(raw) - len(raw.lstrip(" "))
+        line = raw.strip()
+        while len(stack) > 1 and indent < stack[-1][0]:
+            stack.pop()
+        current_map = stack[-1][1]
+        if line.endswith(":"):
+            key = line[:-1].strip()
+            new_map: dict[str, Any] = {}
+            current_map[key] = new_map
+            stack.append((indent + 2, new_map))
+            continue
+        key, val = line.split(":", 1)
+        current_map[key.strip()] = _parse_scalar(val)
+    return root
+
+
 def load_yaml(path: Path) -> dict[str, Any]:
+    text = path.read_text()
     try:
         import yaml  # type: ignore
-    except ImportError as exc:
-        raise SystemExit("Missing dependency: pyyaml. Install with `pip install pyyaml`.") from exc
-    return yaml.safe_load(path.read_text())
+        return yaml.safe_load(text)
+    except Exception:
+        return _minimal_yaml(text)
 
 
 def iter_jsonl(path: Path):
@@ -41,7 +99,7 @@ def as_answer_text(traj: list[tuple[float, float]]) -> str:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run GRPO-style reward selection baseline with optional COLREGs reward.")
+    parser = argparse.ArgumentParser(description="Run GRPO-style reward selection baseline with optional COLREGs/CVaR reward.")
     parser.add_argument("--config", required=True)
     parser.add_argument("--input", required=True, help="JSONL with target_history, neighbor_histories and future")
     args = parser.parse_args()
@@ -55,9 +113,12 @@ def main() -> None:
     num_generations = int(cfg.get("num_generations", 4))
     reward_cfg = cfg.get("reward", {})
     w_format = float(reward_cfg.get("w_format", 0.3))
-    w_acc = float(reward_cfg.get("w_acc", 0.7))
-    w_colregs = float(reward_cfg.get("w_colregs", 0.0))
+    w_acc = float(reward_cfg.get("w_acc", 0.5))
+    w_colregs = float(reward_cfg.get("w_colregs", 0.2))
+    w_cvar = float(reward_cfg.get("w_cvar", 0.0))
+    cvar_alpha = float(reward_cfg.get("cvar_alpha", 0.5))
     safety_dcpa_m = float(reward_cfg.get("safety_dcpa_m", 500.0))
+    colregs_mode = str(reward_cfg.get("colregs_mode", "softmin"))
 
     rewards = []
     ades = []
@@ -67,19 +128,21 @@ def main() -> None:
         future = [tuple(x) for x in rec["future"]]
 
         neighbors = rec.get("neighbor_histories", [])
-        neighbor_hist = neighbors[0] if neighbors else None
-        neighbor_future = extrapolate(neighbor_hist, horizon=len(future), noise=0.0) if neighbor_hist else None
+        neighbor_futures = [extrapolate(n, horizon=len(future), noise=0.0) for n in neighbors if n]
 
         cands = [extrapolate(history, horizon=len(future), noise=0.002) for _ in range(num_generations)]
         cand_rewards = [
             combined_reward(
                 as_answer_text(c),
                 future,
-                neighbor_traj=neighbor_future,
+                neighbor_trajs=neighbor_futures,
                 w_format=w_format,
                 w_acc=w_acc,
                 w_colregs=w_colregs,
+                w_cvar=w_cvar,
+                cvar_alpha=cvar_alpha,
                 safety_dcpa_m=safety_dcpa_m,
+                colregs_mode=colregs_mode,
             )
             for c in cands
         ]
@@ -98,6 +161,8 @@ def main() -> None:
         "w_format": w_format,
         "w_acc": w_acc,
         "w_colregs": w_colregs,
+        "w_cvar": w_cvar,
+        "colregs_mode": colregs_mode,
         "avg_best_reward": sum(rewards) / len(rewards) if rewards else 0.0,
         "avg_best_ade_m": sum(ades) / len(ades) if ades else 0.0,
     }

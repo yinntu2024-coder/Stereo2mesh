@@ -2,7 +2,14 @@
 
 from .colregs import colregs_risk_reward, tcpa_dcpa
 from .metrics import ade, fde, geodesic_distance_m
-from .rewards import accuracy_reward, colregs_reward, combined_reward, format_reward
+from .rewards import (
+    accuracy_reward,
+    colregs_reward,
+    combined_reward,
+    cvar_accuracy_reward,
+    format_reward,
+    multi_colregs_reward,
+)
 from .prompting import build_prompt, parse_answer_trajectory
 
 __all__ = [
@@ -13,7 +20,9 @@ __all__ = [
     "colregs_risk_reward",
     "format_reward",
     "accuracy_reward",
+    "cvar_accuracy_reward",
     "colregs_reward",
+    "multi_colregs_reward",
     "combined_reward",
     "build_prompt",
     "parse_answer_trajectory",
