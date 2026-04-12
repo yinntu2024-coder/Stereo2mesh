@@ -260,3 +260,18 @@ PYTHONPATH=src python tools/train_grpo_policy.py \
   --input data/sample_shiptraj.jsonl \
   --epochs 15 --num-samples 8 --lr 1e-2 --seed 42
 ```
+
+## 13. 更强策略基线：线性特征策略（无外部依赖）
+
+新增：
+- `src/repro_shiptraj_r1/policy_linear.py`
+- `tools/train_grpo_linear.py`
+
+相比 `theta` 单参数策略，线性特征策略用 `W @ [1, vlon, vlat]` 同时建模经度/纬度增量，表示能力更强。
+
+命令：
+```bash
+PYTHONPATH=src python tools/train_grpo_linear.py \
+  --input data/sample_shiptraj.jsonl \
+  --epochs 15 --num-samples 8 --lr 1e-3 --seed 42
+```

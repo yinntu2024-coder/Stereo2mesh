@@ -3,6 +3,7 @@
 from .colregs import colregs_risk_reward, tcpa_dcpa
 from .metrics import ade, fde, geodesic_distance_m
 from .policy import GaussianVelocityPolicy, grpo_step, trajectory_reward
+from .policy_linear import LinearFeaturePolicy, grpo_linear_step
 from .rewards import (
     accuracy_reward,
     colregs_reward,
@@ -28,6 +29,8 @@ __all__ = [
     "GaussianVelocityPolicy",
     "trajectory_reward",
     "grpo_step",
+    "LinearFeaturePolicy",
+    "grpo_linear_step",
     "build_prompt",
     "parse_answer_trajectory",
 ]
