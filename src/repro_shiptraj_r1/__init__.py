@@ -14,6 +14,12 @@ from .rewards import (
 )
 from .prompting import build_prompt, parse_answer_trajectory
 
+try:  # optional dependency: numpy
+    from .policy_mlp_es import MLPESPolicy, grpo_es_step
+except Exception:  # pragma: no cover
+    MLPESPolicy = None
+    grpo_es_step = None
+
 __all__ = [
     "ade",
     "fde",
@@ -31,6 +37,8 @@ __all__ = [
     "grpo_step",
     "LinearFeaturePolicy",
     "grpo_linear_step",
+    "MLPESPolicy",
+    "grpo_es_step",
     "build_prompt",
     "parse_answer_trajectory",
 ]

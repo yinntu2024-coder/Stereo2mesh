@@ -275,3 +275,19 @@ PYTHONPATH=src python tools/train_grpo_linear.py \
   --input data/sample_shiptraj.jsonl \
   --epochs 15 --num-samples 8 --lr 1e-3 --seed 42
 ```
+
+## 14. 小型 MLP 策略（ES 更新）
+
+新增：
+- `src/repro_shiptraj_r1/policy_mlp_es.py`
+- `tools/train_grpo_mlp.py`
+
+这个版本使用两层 MLP 预测步进增量，并用演化策略（ES）估计梯度进行 GRPO 风格更新，
+能在不依赖深度学习框架的情况下提供更强非线性策略基线。
+
+命令：
+```bash
+PYTHONPATH=src python tools/train_grpo_mlp.py \
+  --input data/sample_shiptraj.jsonl \
+  --epochs 10 --num-samples 16 --lr 1e-2 --seed 42
+```
