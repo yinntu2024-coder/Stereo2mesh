@@ -1,0 +1,44 @@
+"""Utilities for reproducing ShipTraj-R1 style trajectory prediction."""
+
+from .colregs import colregs_risk_reward, tcpa_dcpa
+from .metrics import ade, fde, geodesic_distance_m
+from .policy import GaussianVelocityPolicy, grpo_step, trajectory_reward
+from .policy_linear import LinearFeaturePolicy, grpo_linear_step
+from .rewards import (
+    accuracy_reward,
+    colregs_reward,
+    combined_reward,
+    cvar_accuracy_reward,
+    format_reward,
+    multi_colregs_reward,
+)
+from .prompting import build_prompt, parse_answer_trajectory
+
+try:  # optional dependency: numpy
+    from .policy_mlp_es import MLPESPolicy, grpo_es_step
+except Exception:  # pragma: no cover
+    MLPESPolicy = None
+    grpo_es_step = None
+
+__all__ = [
+    "ade",
+    "fde",
+    "geodesic_distance_m",
+    "tcpa_dcpa",
+    "colregs_risk_reward",
+    "format_reward",
+    "accuracy_reward",
+    "cvar_accuracy_reward",
+    "colregs_reward",
+    "multi_colregs_reward",
+    "combined_reward",
+    "GaussianVelocityPolicy",
+    "trajectory_reward",
+    "grpo_step",
+    "LinearFeaturePolicy",
+    "grpo_linear_step",
+    "MLPESPolicy",
+    "grpo_es_step",
+    "build_prompt",
+    "parse_answer_trajectory",
+]

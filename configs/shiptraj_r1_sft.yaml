@@ -1,0 +1,9 @@
+model_name: Qwen/Qwen3-4B-Instruct
+stage: sft
+seed: 42
+lr: 1.0e-6
+weight_decay: 1.0e-2
+global_batch_size: 16
+max_new_tokens: 256
+tobs_choices: [4, 8]
+tpred_choices: [1, 2, 3, 4]

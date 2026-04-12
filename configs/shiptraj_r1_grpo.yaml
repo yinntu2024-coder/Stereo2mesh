@@ -1,0 +1,19 @@
+model_name: Qwen/Qwen3-8B-Instruct
+stage: grpo
+seed: 42
+lr: 1.0e-6
+weight_decay: 1.0e-2
+global_batch_size: 16
+max_new_tokens: 256
+num_generations: 4
+kl_coef: 1.0e-4
+reward:
+  w_format: 0.3
+  w_acc: 0.45
+  w_colregs: 0.2
+  w_cvar: 0.05
+  cvar_alpha: 0.5
+  safety_dcpa_m: 500.0
+  colregs_mode: softmin
+tobs_choices: [4, 8]
+tpred_choices: [1, 2, 3, 4]
