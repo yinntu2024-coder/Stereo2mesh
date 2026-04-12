@@ -36,19 +36,29 @@ def extrapolate(history: list[list[float]], horizon: int, noise: float) -> list[
     return out
 
 
+def as_answer_text(traj: list[tuple[float, float]]) -> str:
+    return f'<think>candidate rollout</think><answer>{{"trajectory": {json.dumps(traj)} }}</answer>'
+
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run GRPO-style reward selection baseline.")
+    parser = argparse.ArgumentParser(description="Run GRPO-style reward selection baseline with optional COLREGs reward.")
     parser.add_argument("--config", required=True)
-    parser.add_argument("--input", required=True, help="JSONL with target_history and future")
+    parser.add_argument("--input", required=True, help="JSONL with target_history, neighbor_histories and future")
     args = parser.parse_args()
 
     from repro_shiptraj_r1.metrics import ade
-    from repro_shiptraj_r1.rewards import accuracy_reward
+    from repro_shiptraj_r1.rewards import combined_reward
 
     cfg = load_yaml(Path(args.config))
     records = list(iter_jsonl(Path(args.input)))
 
     num_generations = int(cfg.get("num_generations", 4))
+    reward_cfg = cfg.get("reward", {})
+    w_format = float(reward_cfg.get("w_format", 0.3))
+    w_acc = float(reward_cfg.get("w_acc", 0.7))
+    w_colregs = float(reward_cfg.get("w_colregs", 0.0))
+    safety_dcpa_m = float(reward_cfg.get("safety_dcpa_m", 500.0))
+
     rewards = []
     ades = []
 
@@ -56,8 +66,24 @@ def main() -> None:
         history = rec["target_history"]
         future = [tuple(x) for x in rec["future"]]
 
+        neighbors = rec.get("neighbor_histories", [])
+        neighbor_hist = neighbors[0] if neighbors else None
+        neighbor_future = extrapolate(neighbor_hist, horizon=len(future), noise=0.0) if neighbor_hist else None
+
         cands = [extrapolate(history, horizon=len(future), noise=0.002) for _ in range(num_generations)]
-        cand_rewards = [accuracy_reward(c, future) for c in cands]
+        cand_rewards = [
+            combined_reward(
+                as_answer_text(c),
+                future,
+                neighbor_traj=neighbor_future,
+                w_format=w_format,
+                w_acc=w_acc,
+                w_colregs=w_colregs,
+                safety_dcpa_m=safety_dcpa_m,
+            )
+            for c in cands
+        ]
+
         best_idx = max(range(len(cands)), key=lambda i: cand_rewards[i])
         best = cands[best_idx]
 
@@ -69,6 +95,9 @@ def main() -> None:
         "model_name": cfg.get("model_name"),
         "samples": len(records),
         "num_generations": num_generations,
+        "w_format": w_format,
+        "w_acc": w_acc,
+        "w_colregs": w_colregs,
         "avg_best_reward": sum(rewards) / len(rewards) if rewards else 0.0,
         "avg_best_ade_m": sum(ades) / len(ades) if ades else 0.0,
     }

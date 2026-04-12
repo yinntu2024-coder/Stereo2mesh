@@ -222,3 +222,15 @@ PYTHONPATH=src bash scripts/eval.sh
 ```
 
 > 注意：`tools/train_grpo.py` 目前是轻量 GRPO 思路模拟器（多候选 -> 奖励选择），用于验证流程完整性，后续可替换为 TRL/verl 的真实策略优化。
+
+## 10. 已落地的创新增强：COLREGs 奖励
+
+当前仓库已实现：
+- `src/repro_shiptraj_r1/colregs.py`：`tcpa_dcpa` 与 `colregs_risk_reward`
+- `src/repro_shiptraj_r1/rewards.py`：`colregs_reward` 与三项组合奖励
+- `configs/shiptraj_r1_grpo.yaml`：可配置 `w_colregs` 与 `safety_dcpa_m`
+
+你可以直接通过调节 `w_colregs` 做消融：
+- `w_colregs=0.0`（不启用规则风险）
+- `w_colregs=0.2`（默认）
+- `w_colregs=0.4`（强规则）
