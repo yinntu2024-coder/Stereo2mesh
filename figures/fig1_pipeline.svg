@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="720" viewBox="0 0 1800 720" role="img" aria-labelledby="title desc">
+  <title id="title">PA-DSDB pipeline overview for metalens photography</title>
+  <desc id="desc">Physics-Anchored Degradation-State Diffusion Bridge pipeline: metalens measurement, calibrated operator, clean-domain anchor, optical uncertainty prior, bridge state, dynamic degradation state, reverse carrier, carrier network, state-modulated bridge update, measurement-consistency projection and restored output.</desc>
+  <defs>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#2563EB"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#F59E0B"/>
+    </marker>
+    <marker id="arrowMint" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#10B981"/>
+    </marker>
+    <marker id="arrowInk" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#334155"/>
+    </marker>
+    <filter id="softShadow" x="-15%" y="-30%" width="130%" height="170%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#0F172A" flood-opacity="0.14"/>
+    </filter>
+    <linearGradient id="paperGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F8FAFC"/>
+    </linearGradient>
+    <style><![CDATA[
+      .bg { fill: url(#paperGrad); }
+      .title { font-family: Inter, Helvetica, Arial, sans-serif; font-size: 34px; font-weight: 760; fill: #172033; }
+      .subtitle { font-family: Inter, Helvetica, Arial, sans-serif; font-size: 18px; fill: #64748B; }
+      .label { font-family: Inter, Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 700; fill: #172033; }
+      .math { font-family: "Times New Roman", Times, serif; font-size: 20px; font-style: italic; fill: #172033; }
+      .small { font-family: Inter, Helvetica, Arial, sans-serif; font-size: 14px; fill: #475569; }
+      .tag { font-family: Inter, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 800; fill: white; letter-spacing: 0.2px; }
+      .node { stroke-width: 2; rx: 18; ry: 18; filter: url(#softShadow); }
+      .blueNode { fill: #EFF6FF; stroke: #2563EB; }
+      .amberNode { fill: #FFF7ED; stroke: #F59E0B; }
+      .mintNode { fill: #ECFDF5; stroke: #10B981; }
+      .roseNode { fill: #FFF1F2; stroke: #E11D48; }
+      .violetNode { fill: #F5F3FF; stroke: #7C3AED; }
+      .groupBlue { fill: #EFF6FF; stroke: #2563EB; stroke-width: 2; stroke-dasharray: 9 7; opacity: 0.72; rx: 26; ry: 26; }
+      .groupMint { fill: #ECFDF5; stroke: #10B981; stroke-width: 2; stroke-dasharray: 9 7; opacity: 0.72; rx: 26; ry: 26; }
+      .arrowBlue { stroke: #2563EB; stroke-width: 3.2; fill: none; marker-end: url(#arrowBlue); stroke-linecap: round; stroke-linejoin: round; }
+      .arrowAmber { stroke: #F59E0B; stroke-width: 3.2; fill: none; marker-end: url(#arrowAmber); stroke-linecap: round; stroke-linejoin: round; }
+      .arrowMint { stroke: #10B981; stroke-width: 3.2; fill: none; marker-end: url(#arrowMint); stroke-linecap: round; stroke-linejoin: round; }
+      .arrowInk { stroke: #334155; stroke-width: 2.4; fill: none; marker-end: url(#arrowInk); stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 8 7; }
+    ]]></style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1800" height="720"/>
+  <text class="title" x="64" y="58">Physics-Anchored Degradation-State Diffusion Bridge (PA-DSDB)</text>
+  <text class="subtitle" x="64" y="88">Metalens photography restoration with fixed forward uncertainty, dynamic reverse control and measurement consistency</text>
+
+  <!-- group boxes -->
+  <rect class="groupBlue" x="455" y="130" width="405" height="350"/>
+  <rect class="groupMint" x="900" y="130" width="505" height="350"/>
+  <rect x="490" y="116" width="235" height="32" rx="8" fill="#2563EB"/>
+  <text class="tag" x="510" y="138">FIXED FORWARD UNCERTAINTY</text>
+  <rect x="935" y="116" width="230" height="32" rx="8" fill="#10B981"/>
+  <text class="tag" x="954" y="138">DYNAMIC REVERSE CONTROL</text>
+
+  <!-- nodes -->
+  <g id="measurement">
+    <rect class="node blueNode" x="55" y="235" width="175" height="112"/>
+    <text class="label" x="82" y="272">Metalens</text>
+    <text class="label" x="75" y="298">measurement</text>
+    <text class="math" x="134" y="327">y</text>
+  </g>
+
+  <g id="operator">
+    <rect class="node amberNode" x="275" y="235" width="185" height="112"/>
+    <text class="label" x="304" y="268">Calibrated</text>
+    <text class="label" x="314" y="294">operator</text>
+    <text class="math" x="312" y="323">H<tspan baseline-shift="sub" font-size="15">κ</tspan>, H<tspan baseline-shift="sub" font-size="15">κ</tspan><tspan baseline-shift="super" font-size="14">T</tspan></text>
+  </g>
+
+  <g id="anchor">
+    <rect class="node blueNode" x="515" y="185" width="250" height="100"/>
+    <text class="label" x="555" y="220">Clean-domain anchor</text>
+    <text class="math" x="548" y="252">μ = R<tspan baseline-shift="sub" font-size="14">0</tspan>(y,H<tspan baseline-shift="sub" font-size="15">κ</tspan>)</text>
+  </g>
+
+  <g id="prior">
+    <rect class="node amberNode" x="515" y="335" width="250" height="100"/>
+    <text class="label" x="552" y="370">Optical uncertainty</text>
+    <text class="math" x="535" y="402">ρ = P<tspan baseline-shift="sub" font-size="14">ψ</tspan>(y,u,d<tspan baseline-shift="sub" font-size="14">κ</tspan>)</text>
+  </g>
+
+  <g id="bridge">
+    <rect class="node blueNode" x="815" y="260" width="175" height="95"/>
+    <text class="label" x="853" y="298">Bridge state</text>
+    <text class="math" x="890" y="327">x<tspan baseline-shift="sub" font-size="14">t</tspan></text>
+  </g>
+
+  <g id="state">
+    <rect class="node mintNode" x="1035" y="185" width="220" height="100"/>
+    <text class="label" x="1076" y="219">Dynamic state</text>
+    <text class="math" x="1066" y="252">s<tspan baseline-shift="sub" font-size="14">t</tspan> = G<tspan baseline-shift="sub" font-size="14">η</tspan>(·)</text>
+  </g>
+
+  <g id="carrier">
+    <rect class="node mintNode" x="1035" y="335" width="220" height="100"/>
+    <text class="label" x="1071" y="369">Reverse carrier</text>
+    <text class="math" x="1055" y="402">Π<tspan baseline-shift="sub" font-size="14">t</tspan> = ε<tspan baseline-shift="sub" font-size="14">0</tspan> + ρ ⊙ s<tspan baseline-shift="sub" font-size="14">t</tspan></text>
+  </g>
+
+  <g id="carrierNetwork">
+    <rect class="node violetNode" x="1295" y="260" width="200" height="95"/>
+    <text class="label" x="1330" y="296">Carrier network</text>
+    <text class="math" x="1335" y="326">ĉ<tspan baseline-shift="sub" font-size="14">t</tspan> = F<tspan baseline-shift="sub" font-size="14">θ</tspan>(·)</text>
+  </g>
+
+  <g id="update">
+    <rect class="node blueNode" x="1535" y="195" width="200" height="98"/>
+    <text class="label" x="1567" y="229">State-modulated</text>
+    <text class="label" x="1578" y="255">bridge update</text>
+  </g>
+
+  <g id="projection">
+    <rect class="node roseNode" x="1535" y="355" width="200" height="98"/>
+    <text class="label" x="1573" y="389">Measurement</text>
+    <text class="label" x="1584" y="415">projection</text>
+  </g>
+
+  <g id="output">
+    <rect class="node blueNode" x="1545" y="552" width="180" height="92"/>
+    <text class="label" x="1588" y="586">Restored</text>
+    <text class="label" x="1598" y="612">image</text>
+    <text class="math" x="1623" y="637">x̂<tspan baseline-shift="sub" font-size="14">0</tspan></text>
+  </g>
+
+  <!-- arrows -->
+  <path class="arrowAmber" d="M230 291 C248 291 257 291 275 291"/>
+  <path class="arrowAmber" d="M460 268 C482 252 493 242 515 235"/>
+  <path class="arrowAmber" d="M460 315 C482 338 493 357 515 374"/>
+  <path class="arrowBlue" d="M765 235 C790 253 800 274 815 304"/>
+  <path class="arrowBlue" d="M765 385 C790 365 802 341 815 318"/>
+  <path class="arrowMint" d="M990 307 C1014 278 1025 254 1035 235"/>
+  <path class="arrowMint" d="M1145 285 C1145 306 1145 318 1145 335"/>
+  <path class="arrowMint" d="M765 385 C872 400 950 400 1035 392" opacity="0.92"/>
+  <path class="arrowMint" d="M1255 235 C1275 254 1283 277 1295 303"/>
+  <path class="arrowMint" d="M1255 385 C1278 363 1285 337 1295 318"/>
+  <path class="arrowBlue" d="M1495 307 C1513 286 1521 266 1535 244"/>
+  <path class="arrowBlue" d="M1735 244 C1760 288 1760 510 1725 594"/>
+  <path class="arrowAmber" d="M1635 293 C1635 316 1635 333 1635 355"/>
+  <path class="arrowAmber" d="M1635 453 C1635 493 1635 520 1635 552"/>
+  <path class="arrowInk" d="M365 347 C605 535 1180 535 1535 410"/>
+
+  <!-- legends -->
+  <g transform="translate(64 642)">
+    <rect x="0" y="0" width="18" height="8" rx="4" fill="#F59E0B"/>
+    <text class="small" x="28" y="10">physics / measurement path</text>
+    <rect x="230" y="0" width="18" height="8" rx="4" fill="#2563EB"/>
+    <text class="small" x="258" y="10">bridge transport</text>
+    <rect x="420" y="0" width="18" height="8" rx="4" fill="#10B981"/>
+    <text class="small" x="448" y="10">degradation-state control</text>
+    <line x1="678" y1="4" x2="715" y2="4" stroke="#334155" stroke-width="2.4" stroke-dasharray="8 7"/>
+    <text class="small" x="726" y="10">measurement-consistency feedback</text>
+  </g>
+</svg>
